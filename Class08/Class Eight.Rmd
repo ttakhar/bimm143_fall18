@@ -1,0 +1,173 @@
+---
+title: "Class 8"
+author: "Tavleen Takhar"
+date: "10/25/2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## K-mean Clustering 
+
+Our first example with **kmeans()** function
+
+```{r}
+# Example plot to see how Rmarkdown works
+plot(1:10, typ="l")
+```
+
+Back to Kmeans...
+
+```{r}
+# Generate some example data for clustering
+tmp <- c(rnorm(30,-3), rnorm(30,3))
+x <- cbind(x=tmp, y=rev(tmp))
+
+plot(x)
+```
+
+
+```{r}
+k <- kmeans(x, center=2, nstart=20)
+k
+```
+
+# How many points are in each cluster?
+```{r}
+k$size
+```
+# What component of your result object details for assignment/membership?
+```{r}
+k$cluster
+```
+# What component of your result objects details for cluster center?
+```{r}
+k$centers
+```
+
+```{r}
+plot(x, col=k$cluster)
+palette(c("blue", "red"))
+plot(x, col=k$cluster)
+points(k$centers, col="green", pch=20, cex=3)
+```
+```{r}
+k <- kmeans(x, center=2, nstart=20)
+k3 <- kmeans(x, center=3, nstart=20)
+k$tot.withinss
+k3$tot.withinss
+```
+
+
+
+
+
+
+
+
+
+
+
+
+# Hierarchial Clustering in R
+
+```{r}
+d <- dist(x)
+hc <- hclust(d)
+plot(hc)
+```
+
+
+```{r}
+plot(hc)
+abline(h=8, col="red")
+
+cutree(hc, h=8)
+```
+
+
+
+
+### A more "real" example of data clustering
+
+```{r}
+# Step 1. Generate some example data for clustering
+x <- rbind(
+ matrix(rnorm(100, mean=0, sd = 0.3), ncol = 2), # c1
+ matrix(rnorm(100, mean = 1, sd = 0.3), ncol = 2), # c2
+ matrix(c(rnorm(50, mean = 1, sd = 0.3), # c3
+ rnorm(50, mean = 0, sd = 0.3)), ncol = 2))
+colnames(x) <- c("x", "y")
+# Step 2. Plot the data without clustering
+plot(x)
+# Step 3. Generate colors for known clusters
+# (just so we can compare to hclust results)
+col <- as.factor( rep(c("c1","c2","c3"), each=50) )
+plot(x, col=col, pch=20)
+```
+
+
+
+
+```{r}
+d <- dist(x)
+hc <- hclust(d)
+plot(hc)
+
+```
+```{r}
+grp.2 <- cutree(hc, k=2)
+grp.3 <- cutree(hc, k=3)
+plot(hc)
+
+```
+
+
+
+```{r}
+table(grp.3, col)
+```
+
+
+
+# Principal Component Analysis
+```{r}
+## Initialize a blank 100 row by 10 column matrix
+mydata <- matrix(nrow=100, ncol=10)
+## Lets label the rows gene1, gene2 etc. to gene100
+rownames(mydata) <- paste("gene", 1:100, sep="")
+## Lets label the first 5 columns wt1, wt2, wt3, wt4 and wt5
+## and the last 5 ko1, ko2 etc. to ko5 (for "knock-out")
+colnames(mydata) <- c( paste("wt", 1:5, sep=""),
+ paste("ko", 1:5, sep="") )
+## Fill in some fake read counts
+for(i in 1:nrow(mydata)) {
+ wt.values <- rpois(5, lambda=sample(x=10:1000, size=1))
+ ko.values <- rpois(5, lambda=sample(x=10:1000, size=1))
+
+ mydata[i,] <- c(wt.values, ko.values)
+}
+head(mydata)
+```
+
+# Now lets try to find structure in this dat
+```{r}
+head(t(mydata))
+
+```
+
+```{r}
+pca <- prcomp(t(mydata), scale=TRUE)
+pca
+```
+
+# Make a PC plot of PC1 vs PC2. For this I use the `$x` component of our output 
+```{r}
+plot(pca$x[,1], pca$x[,2])
+```
+
+
+
+
