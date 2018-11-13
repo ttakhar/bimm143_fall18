@@ -1,0 +1,17 @@
+---
+title: "Class13: Structural Bioinformatics"
+author: "Tavleen Takhar"
+date: "11/13/2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(bio3d)
+
+file.name <- get.pdb("1hsg")
+```
+
